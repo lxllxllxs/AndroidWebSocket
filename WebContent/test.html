@@ -1,0 +1,58 @@
+<%@ page language="java" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Java websocket测试</title>
+</head>
+<body>
+    Welcome<br/><input id="text" type="text"/>
+    <button onclick="send()">发送</button>
+    <hr/>
+    <button onclick="closeWebSocket()">关闭</button>
+    <hr/>
+    <div id="message"></div>
+</body>
+
+<script type="text/javascript">
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:8080/AndroidWebSocket/Chat");
+    }
+    else {
+        alert('连接失败')
+    }
+
+    websocket.onerror = function () {
+        setMessageInnerHTML("WebSocket 错误");
+    };
+
+    websocket.onopen = function () {
+        setMessageInnerHTML("WebSocket 打开");
+    }
+
+    websocket.onmessage = function (event) {
+        setMessageInnerHTML(event.data);
+    }
+
+    websocket.onclose = function () {
+        setMessageInnerHTML("WebSocket 关闭");
+    }
+
+    window.onbeforeunload = function () {
+        closeWebSocket();
+    }
+
+    function setMessageInnerHTML(innerHTML) {
+        document.getElementById('message').innerHTML += innerHTML + '<br/>';
+    }
+
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    function send() {
+        var message = document.getElementById('text').value;
+        websocket.send(message);
+    }
+</script>
+</html>

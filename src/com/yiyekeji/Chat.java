@@ -56,6 +56,7 @@ public class Chat {
         connections.add(this);
         String message = String.format("System> %s %s", this.nickName,
                 " has joined.");
+        System.out.println(message);
         Chat.broadCast(message);
         
     }
@@ -70,6 +71,7 @@ public class Chat {
      */
     @OnMessage
     public void receiveMessage(byte[] message){
+    	System.out.println(new String (message));
     	String gsonString = new String(message);
     	LogUtil.debug(gsonString.length());
     	Gson gson=new Gson();
@@ -91,7 +93,14 @@ public class Chat {
 			break;
 		}
     }
-    
+    /**
+     * 先解析JSON数据
+     * @param message
+     */
+    @OnMessage
+    public void receiveTextMessage(String message){
+    	System.out.println(new String (message));
+    }
     
  
     /** 
