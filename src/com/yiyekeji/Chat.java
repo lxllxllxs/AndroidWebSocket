@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -20,6 +21,8 @@ import javax.websocket.server.ServerEndpoint;
 import sun.misc.BASE64Decoder;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.lxl.im.utils.LogUtil;
 import com.yiyekeji.bean.ChatMessage;
 
 @ServerEndpoint(value = "/Chat")
@@ -67,8 +70,11 @@ public class Chat {
      */
     @OnMessage
     public void receiveMessage(byte[] message){
-    	ChatMessage chatmessage=(ChatMessage)toObject(message);
-    	switch (chatmessage.getChatType()) {
+    	String gsonString = new String(message);
+    	LogUtil.debug(gsonString.length());
+    	Gson gson=new Gson();
+    	ChatMessage chatmessage=gson.fromJson(gsonString, ChatMessage.class);
+    	switch (chatmessage.getMessageType()) {
 		case "0":
 			stringToImage(chatmessage.getContent(),"C:/xx.jpg");
 			break;
@@ -87,28 +93,7 @@ public class Chat {
     }
     
     
-    /**  
-     * 数组转对象  
-     * @param bytes  
-     * @return  
-     */  
-    public Object toObject (byte[] bytes) {   
-    	System.out.println(bytes.length);
-        Object obj = null;      
-        try {        
-            ByteArrayInputStream bis = new ByteArrayInputStream (bytes);        
-            ObjectInputStream ois = new ObjectInputStream (bis);        
-            obj = ois.readObject();      
-            ois.close();   
-            bis.close();   
-        } catch (IOException ex) {        
-            ex.printStackTrace();   
-        } catch (ClassNotFoundException ex) {        
-            ex.printStackTrace();   
-        }      
-        return obj;    
-    }   
-
+ 
     /** 
      *不想 通过BASE64Decoder解码，并生成图片 
      * @param imgStr 解码后的string 
