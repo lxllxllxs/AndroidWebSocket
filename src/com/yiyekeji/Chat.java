@@ -18,16 +18,18 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import net.sf.json.JSONObject;
 import sun.misc.BASE64Decoder;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.lxl.im.utils.ConstanUtil;
 import com.lxl.im.utils.LogUtil;
+import com.lxl.im.utils.MessageType;
 import com.yiyekeji.bean.ChatMessage;
 
 @ServerEndpoint(value = "/Chat")
 public class Chat {
-
+	JSONObject  jsonObject;
     /**
      * 连接对象集合
      */
@@ -71,28 +73,34 @@ public class Chat {
      */
     @OnMessage
     public void receiveMessage(byte[] message){
-    	System.out.println(new String (message));
-    	String gsonString = new String(message);
-    	LogUtil.debug(gsonString.length());
-    	Gson gson=new Gson();
-    	ChatMessage chatmessage=gson.fromJson(gsonString, ChatMessage.class);
-    	switch (chatmessage.getMessageType()) {
-		case "0":
-			stringToImage(chatmessage.getContent(),"C:/xx.jpg");
+    	LogUtil.d(message.length);
+    	String jsonString;
+		try {
+			jsonString = new String(message,"utf-8").trim();
+			LogUtil.d(jsonString.length());
+			Gson gson=new Gson();
+			jsonObject= JSONObject.fromObject(jsonString);
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		LogUtil.d("no problem");
+    	switch ((MessageType)jsonObject.get(ConstanUtil.MESSAG_TYPE)) {
+		case TextMessage:
+			LogUtil.d(jsonObject.getString(ConstanUtil.CONTENT));
 			break;
-		case "1":
+		case ImageMessage:
+			String imgString=jsonObject.getString(ConstanUtil.CONTENT);
+			stringToImage(imgString.getBytes(),"C:/xx.jpg");
 			String text;
-			try {
-				text = new String(chatmessage.getContent(),"UTF-8");
-				System.out.println(text);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
 			break;
 		default:
 			break;
 		}
     }
+    
+    
+    
     /**
      * 先解析JSON数据
      * @param message
@@ -102,7 +110,28 @@ public class Chat {
     	System.out.println(new String (message));
     }
     
- 
+    /** 
+     * 数组转对象 
+     * @param bytes 
+     * @return 
+     */  
+    public JSONObject toObject (byte[] bytes) {     
+        JSONObject obj = null;     
+        try {       
+            ByteArrayInputStream bis = new ByteArrayInputStream (bytes);       
+            ObjectInputStream ois = new ObjectInputStream (bis);       
+            obj = (JSONObject)ois.readObject();     
+            ois.close();  
+            bis.close();  
+        } catch (IOException ex) {       
+            ex.printStackTrace();  
+        } catch (ClassNotFoundException ex) {       
+            ex.printStackTrace();  
+        }     
+        return obj;   
+    }  
+    
+    
     /** 
      *不想 通过BASE64Decoder解码，并生成图片 
      * @param imgStr 解码后的string 

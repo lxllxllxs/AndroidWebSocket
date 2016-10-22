@@ -94,7 +94,7 @@ public abstract class LogUtil
      *       if(logger.isLoggable(LogEnv.DEBUG))
      *           LogEnv.debug(...);
      */
-    public static void debug(Object msg)
+    public static void d(Object msg)
     {
     	if(!DEBUG){
     		return;
