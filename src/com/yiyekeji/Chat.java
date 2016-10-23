@@ -57,7 +57,7 @@ public class Chat {
         this.session = session;
         this.session.setMaxBinaryMessageBufferSize(10*1024*1024);
         connections.add(this);
-        String message = String.format("System> %s %s", this.nickName,
+        String message = String.format("System> %s %s", session.getId(),
                 " has joined.");
         System.out.println(message);
         Chat.broadCast(message);
@@ -81,7 +81,6 @@ public class Chat {
 			jsonString = new String(message,"utf-8").trim();
 			LogUtil.d(jsonString.length());
 			jsonObject= new JSONObject(jsonString);
-			LogUtil.d("no problem");
 			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAG_TYPE));
 	    	switch (type) {
 			case TextMessage:
