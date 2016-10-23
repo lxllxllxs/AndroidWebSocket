@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.websocket.Session;
 
+import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
 
 public class SendMessageHandler {
@@ -18,11 +19,12 @@ public class SendMessageHandler {
 					continue;
 				}
 				item.getKey().getBasicRemote().sendBinary(bb);
+				item.getKey().getBasicRemote().sendText(new String(payload));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-
+	
+	
 }

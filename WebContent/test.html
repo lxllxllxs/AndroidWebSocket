@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Java websocket娴嬭瘯</title>
+    <title>Java websocket</title>
 </head>
 <body>
     Welcome<br/><input id="text" type="text"/>
@@ -19,7 +19,7 @@
         websocket = new WebSocket("ws://localhost:8080/AndroidWebSocket/Chat");
     }
     else {
-        alert('杩炴帴澶辫触')
+        alert('fail')
     }
 
     websocket.onerror = function () {
@@ -31,7 +31,9 @@
     }
 
     websocket.onmessage = function (event) {
-        setMessageInnerHTML(event.data);
+    	var s=event.data;
+    	alert(s)
+        setMessageInnerHTML(s);
     }
 
     websocket.onclose = function () {
@@ -51,8 +53,7 @@
     }
 
     function send() {
-        var message = document.getElementById('text').value;
-        message={"result":true,"password":"123","messageType":"Login","userName":"lxl"}
+        var message ='{"result":true,"password":"123","messageType":"Login","userName":"lxl"}';
         websocket.send(message);
     }
 </script>

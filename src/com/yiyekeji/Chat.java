@@ -57,13 +57,47 @@ public class Chat extends BaseChat{
     	String message = String.format("System %s %s", session.getId(),
                 " has joined.");
         System.out.println(message);
-       
         Chat.broadCast(message);
-        
     }
-
-    public void parseSession(){
-    	
+    
+    @OnMessage
+    public void receiveMessage(String message){
+    	JSONObject jsonObject;
+		try {
+//			LogUtil.d(jsonString.length());
+			jsonObject= new JSONObject(message);
+			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAG_TYPE));
+			switch (type) {
+			case TextMessage:
+				String content=jsonObject.getString(ConstantUtil.CONTENT);
+				LogUtil.d(content);
+				new SendMessageHandler().sendMessage(session,content.getBytes());
+				break;
+			case ImageMessage:
+				String content1=jsonObject.getString(ConstantUtil.CONTENT);
+				stringToImage(content1.getBytes(),"C:/xx.jpg");
+				break;
+			case Login:
+				String username=jsonObject.getString(ConstantUtil.USER_NAME);
+				String password=jsonObject.getString(ConstantUtil.PASSWORD);
+				boolean isSuccuess=new LoginHandler().isSignIn(session,username, password);
+				if(isSuccuess){
+					jsonObject.put(ConstantUtil.RESULT,true);
+					try {
+						session.getBasicRemote().sendText(jsonObject.toString());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		//在这里转发数据
+//		relay(message);
     }
     
     /**
@@ -82,7 +116,7 @@ public class Chat extends BaseChat{
 	    	switch (type) {
 			case TextMessage:
 				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
-				new SendMessageHandler().sendMessage(session, message);
+				new SendMessageHandler().sendMessage(session, jsonObject.getString(ConstantUtil.CONTENT).getBytes());
 				break;
 			case ImageMessage:
 				String imgString=jsonObject.getString(ConstantUtil.CONTENT);
@@ -95,6 +129,7 @@ public class Chat extends BaseChat{
 				if(isSuccuess){
 					jsonObject.put(ConstantUtil.RESULT,true);
 					try {
+						//应该在这里推送好友列表
 						session.getBasicRemote().sendText(jsonObject.toString());
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -104,12 +139,9 @@ public class Chat extends BaseChat{
 			default:
 				break;
 			}
-			
 		} catch (UnsupportedEncodingException | JSONException e) {
 			e.printStackTrace();
 		}
-		//在这里转发数据
-//		relay(message);
     }
     
     /**
