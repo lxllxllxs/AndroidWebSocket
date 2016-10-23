@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Java websocket测试</title>
+    <title>Java websocket娴嬭瘯</title>
 </head>
 <body>
     Welcome<br/><input id="text" type="text"/>
-    <button onclick="send()">发送</button>
+    <button onclick="send()">SEND</button>
     <hr/>
-    <button onclick="closeWebSocket()">关闭</button>
+    <button onclick="closeWebSocket()">CLOSE </button>
     <hr/>
     <div id="message"></div>
 </body>
@@ -19,15 +19,15 @@
         websocket = new WebSocket("ws://localhost:8080/AndroidWebSocket/Chat");
     }
     else {
-        alert('连接失败')
+        alert('杩炴帴澶辫触')
     }
 
     websocket.onerror = function () {
-        setMessageInnerHTML("WebSocket 错误");
+        setMessageInnerHTML("WebSocket onerror");
     };
 
     websocket.onopen = function () {
-        setMessageInnerHTML("WebSocket 打开");
+        setMessageInnerHTML("WebSocket onopen");
     }
 
     websocket.onmessage = function (event) {
@@ -35,7 +35,7 @@
     }
 
     websocket.onclose = function () {
-        setMessageInnerHTML("WebSocket 关闭");
+        setMessageInnerHTML("WebSocket onclose");
     }
 
     window.onbeforeunload = function () {

@@ -31,35 +31,32 @@ import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
 import com.yiyekeji.bean.ChatMessage;
 
+import handler.LoginHandler;
+
 @ServerEndpoint(value = "/Chat")
 public class Chat extends BaseChat{
     /**
      * 连接对象集合
      */
-    private static final Set<Chat> connections = new CopyOnWriteArraySet<Chat>();
-
     private String nickName;
-
+    Session session;
     /**
      * WebSocket Session
      */
 
     public Chat() {
     }
-
     /**
      * 打开连接
-     * 
      * @param session
-     * @param nickName
      */
     @OnOpen
     public void onOpen(Session session) {
-    	super.onOpen(session);;
-        connections.add(this);
-        String message = String.format("System> %s %s", session.getId(),
+    	this.session=session;
+    	String message = String.format("System %s %s", session.getId(),
                 " has joined.");
         System.out.println(message);
+       
         Chat.broadCast(message);
         
     }
@@ -74,12 +71,11 @@ public class Chat extends BaseChat{
      */
     @OnMessage
     public void receiveMessage(byte[] message){
-    	LogUtil.d(message.length);
     	String jsonString;
     	JSONObject jsonObject;
 		try {
 			jsonString = new String(message,"utf-8").trim();
-			LogUtil.d(jsonString.length());
+//			LogUtil.d(jsonString.length());
 			jsonObject= new JSONObject(jsonString);
 			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAG_TYPE));
 	    	switch (type) {
@@ -93,6 +89,15 @@ public class Chat extends BaseChat{
 			case Login:
 				String username=jsonObject.getString(ConstantUtil.USER_NAME);
 				String password=jsonObject.getString(ConstantUtil.PASSWORD);
+				boolean isSuccuess=new LoginHandler().isSignIn(session,username, password);
+				if(isSuccuess){
+					jsonObject.put(ConstantUtil.RESULT,true);
+					try {
+						session.getBasicRemote().sendText(jsonObject.toString());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 				break;
 			default:
 				break;
@@ -102,7 +107,7 @@ public class Chat extends BaseChat{
 			e.printStackTrace();
 		}
 		//在这里转发数据
-		relay(message);
+//		relay(message);
     }
     
     /**
@@ -111,7 +116,7 @@ public class Chat extends BaseChat{
      */
     private void relay(byte[] message) {
     	ByteBuffer buf = ByteBuffer.wrap(message);
-    	for(BaseChat chat:ManageUtil.chatList){
+    	/*for(BaseChat chat:ManageUtil.chatList){
 //    		if (getSession().getId().equals(chat.getSession().getId())) {
     			try {
 					chat.getSession().getBasicRemote().sendText(new String(message));
@@ -119,7 +124,7 @@ public class Chat extends BaseChat{
 					e.printStackTrace();
 				};
 //			}
-    	}
+    	}*/
 		
 	}
 
@@ -151,19 +156,6 @@ public class Chat extends BaseChat{
      * @param imgStr 解码后的string 
      */  
     public boolean stringToImage(byte[] imgStr, String imgFilePath) {  
-     /*   // 对字节数组字符串进行Base64解码并生成图片  
-        if (imgStr == null)  
-            return false;  
-        try {  
-            // Base64解码  
-            byte[] b = new BASE64Decoder().decodeBuffer(imgStr);  
-            for (int i = 0; i < b.length; ++i) {  
-                if (b[i] < 0) {  
-                    // 调整异常数据  
-                    b[i] += 256;  
-                }  
-            }  */
-            // 生成Jpeg图片  
             OutputStream out;
 			try {
 				out = new FileOutputStream(imgFilePath);
@@ -185,6 +177,7 @@ public class Chat extends BaseChat{
      */
     @OnError
     public void onError(Throwable throwable) {
+    	ManageUtil.chatList.remove(this);
         System.out.println(throwable.getMessage());
     }
 
@@ -214,8 +207,9 @@ public class Chat extends BaseChat{
      */
     @OnClose
     public void onClose() {
-        connections.remove(this);
-        String message = String.format("System> %s, %s", this.nickName,
+    	ManageUtil.chatList.remove(session);
+    	LogUtil.d(ManageUtil.chatList.size());
+        String message = String.format("System> %s, %s", session.getId(),
                 " has disconnection.");
     }
 }
