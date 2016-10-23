@@ -18,18 +18,19 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import net.sf.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import sun.misc.BASE64Decoder;
 
 import com.google.gson.Gson;
-import com.lxl.im.utils.ConstanUtil;
+import com.lxl.im.utils.ConstantUtil;
+import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.LogUtil;
-import com.lxl.im.utils.MessageType;
 import com.yiyekeji.bean.ChatMessage;
 
 @ServerEndpoint(value = "/Chat")
 public class Chat {
-	JSONObject  jsonObject;
     /**
      * 连接对象集合
      */
@@ -75,27 +76,27 @@ public class Chat {
     public void receiveMessage(byte[] message){
     	LogUtil.d(message.length);
     	String jsonString;
+    	JSONObject jsonObject;
 		try {
 			jsonString = new String(message,"utf-8").trim();
 			LogUtil.d(jsonString.length());
-			Gson gson=new Gson();
-			jsonObject= JSONObject.fromObject(jsonString);
+			jsonObject= new JSONObject(jsonString);
+			LogUtil.d("no problem");
+			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAG_TYPE));
+	    	switch (type) {
+			case TextMessage:
+				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
+				break;
+			case ImageMessage:
+				String imgString=jsonObject.getString(ConstantUtil.CONTENT);
+				stringToImage(imgString.getBytes(),"C:/xx.jpg");
+				break;
+			default:
+				break;
+			}
 			
-		} catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException | JSONException e) {
 			e.printStackTrace();
-		}
-		LogUtil.d("no problem");
-    	switch ((MessageType)jsonObject.get(ConstanUtil.MESSAG_TYPE)) {
-		case TextMessage:
-			LogUtil.d(jsonObject.getString(ConstanUtil.CONTENT));
-			break;
-		case ImageMessage:
-			String imgString=jsonObject.getString(ConstanUtil.CONTENT);
-			stringToImage(imgString.getBytes(),"C:/xx.jpg");
-			String text;
-			break;
-		default:
-			break;
 		}
     }
     
