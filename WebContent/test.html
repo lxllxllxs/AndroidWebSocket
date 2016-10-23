@@ -52,6 +52,7 @@
 
     function send() {
         var message = document.getElementById('text').value;
+        message={"result":true,"password":"123","messageType":"Login","userName":"lxl"}
         websocket.send(message);
     }
 </script>

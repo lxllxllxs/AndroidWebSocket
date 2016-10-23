@@ -32,6 +32,7 @@ import com.lxl.im.utils.ManageUtil;
 import com.yiyekeji.bean.ChatMessage;
 
 import handler.LoginHandler;
+import handler.SendMessageHandler;
 
 @ServerEndpoint(value = "/Chat")
 public class Chat extends BaseChat{
@@ -81,6 +82,7 @@ public class Chat extends BaseChat{
 	    	switch (type) {
 			case TextMessage:
 				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
+				new SendMessageHandler().sendMessage(session, message);
 				break;
 			case ImageMessage:
 				String imgString=jsonObject.getString(ConstantUtil.CONTENT);
