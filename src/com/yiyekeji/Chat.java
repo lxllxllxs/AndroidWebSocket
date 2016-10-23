@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -27,10 +28,11 @@ import com.google.gson.Gson;
 import com.lxl.im.utils.ConstantUtil;
 import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.LogUtil;
+import com.lxl.im.utils.ManageUtil;
 import com.yiyekeji.bean.ChatMessage;
 
 @ServerEndpoint(value = "/Chat")
-public class Chat {
+public class Chat extends BaseChat{
     /**
      * 连接对象集合
      */
@@ -41,7 +43,6 @@ public class Chat {
     /**
      * WebSocket Session
      */
-    private Session session;
 
     public Chat() {
     }
@@ -54,8 +55,7 @@ public class Chat {
      */
     @OnOpen
     public void onOpen(Session session) {
-        this.session = session;
-        this.session.setMaxBinaryMessageBufferSize(10*1024*1024);
+    	super.onOpen(session);;
         connections.add(this);
         String message = String.format("System> %s %s", session.getId(),
                 " has joined.");
@@ -90,6 +90,10 @@ public class Chat {
 				String imgString=jsonObject.getString(ConstantUtil.CONTENT);
 				stringToImage(imgString.getBytes(),"C:/xx.jpg");
 				break;
+			case Login:
+				String username=jsonObject.getString(ConstantUtil.USER_NAME);
+				String password=jsonObject.getString(ConstantUtil.PASSWORD);
+				break;
 			default:
 				break;
 			}
@@ -97,18 +101,28 @@ public class Chat {
 		} catch (UnsupportedEncodingException | JSONException e) {
 			e.printStackTrace();
 		}
+		//在这里转发数据
+		relay(message);
     }
-    
-    
     
     /**
-     * 先解析JSON数据
+     * 发送到指定session
      * @param message
      */
-    @OnMessage
-    public void receiveTextMessage(String message){
-    	System.out.println(new String (message));
-    }
+    private void relay(byte[] message) {
+    	ByteBuffer buf = ByteBuffer.wrap(message);
+    	for(BaseChat chat:ManageUtil.chatList){
+//    		if (getSession().getId().equals(chat.getSession().getId())) {
+    			try {
+					chat.getSession().getBasicRemote().sendText(new String(message));
+				} catch (IOException e) {
+					e.printStackTrace();
+				};
+//			}
+    	}
+		
+	}
+
     
     /** 
      * 数组转对象 
@@ -179,7 +193,7 @@ public class Chat {
      * @param message
      */
     private static void broadCast(String message) {
-        for (Chat chat : connections) {
+    /*    for (Chat chat : connections) {
             try {
                 synchronized (chat) {
                     chat.session.getBasicRemote().sendText(message);
@@ -193,7 +207,7 @@ public class Chat {
                 Chat.broadCast(String.format("System> %s %s", chat.nickName,
                         " has bean disconnection."));
             }
-        }
+        }*/
     }
     /**
      * 关闭连接
