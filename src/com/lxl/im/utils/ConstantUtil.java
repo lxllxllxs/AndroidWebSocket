@@ -10,6 +10,7 @@ public class ConstantUtil {
     public final static String PASSWORD="password";
 
     public final static String RESULT="result";
-
+    public final static String LinkList="LinkList";
+    
 }
 
