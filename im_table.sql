@@ -39,14 +39,14 @@ DROP TABLE IF EXISTS `im_unsend`;
 
 CREATE TABLE `im_unsend` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `receiverId` varchar(13) NOT NULL,
+  `receiverId` varchar(100) NOT NULL,
   `content` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `im_unsend` */
 
-insert  into `im_unsend`(`id`,`receiverId`,`content`) values (1,'201911asdasd','{\"senderId\":\"123\",\"receiverID\":\"201911asdasd\",\"messageType\":\"TextMessage\",\"receiver\":\"lxl2\",\"sender\":\"lxl\",\"content\":\"???????????????\"}');
+insert  into `im_unsend`(`id`,`receiverId`,`content`) values (1,'201911asdasd','{\"senderId\":\"123\",\"receiverID\":\"201911asdasd\",\"messageType\":\"TextMessage\",\"receiver\":\"lxl2\",\"sender\":\"lxl\",\"content\":\"???????????????\"}'),(2,'201911asdasd','{\"senderId\":\"123\",\"receiverID\":\"201911asdasd\",\"messageType\":\"TextMessage\",\"receiver\":\"lxl2\",\"sender\":\"lxl\",\"content\":\"???????????????\"}');
 
 /*Table structure for table `im_user` */
 

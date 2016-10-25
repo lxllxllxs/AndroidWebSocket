@@ -19,6 +19,7 @@ import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.JdbcUtils;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
+import com.mysql.jdbc.log.Log;
 
 import jdk.nashorn.internal.scripts.JS;
 
@@ -36,18 +37,18 @@ public class SendMessageHandler {
 	 * @param jsonObject
 	 * @param payload
 	 */
-	public void sendMessage(JSONObject jsonObject,byte[] payload){
+	public void sendMessage(JSONObject jsonObject){
 		String receiverId="";
 		try {
 			receiverId = jsonObject.getString(ConstantUtil.RECEIVER_ID);
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-		ByteBuffer bb=ByteBuffer.wrap(payload);
+		
 		for(Map.Entry<String,Session> item:ManageUtil.chatList.entrySet()){
 			try {
 				if(item.getKey().equals(receiverId)){
-					item.getValue().getBasicRemote().sendBinary(bb);
+					item.getValue().getBasicRemote().sendBinary(JOToByteBuffer(jsonObject));
 					return;
 				}
 				LogUtil.d("该用户未登录"+receiverId);
@@ -62,25 +63,38 @@ public class SendMessageHandler {
 	/**
 	 * 推送未接收信息
 	 */
-	public String sendUnReceiverMessage(String receiverId){
+	public void sendUnReceiverMessage(String receiverId){
 		ResultSet rs=JdbcUtils.queryUnSendMessage(receiverId);
 		JSONArray jsonArray=new JSONArray();
 		JSONObject jsonObject;
+		int count=0;
 		try {
 			while(rs.next()){
 				jsonObject=new JSONObject(rs.getString("content"));
 				jsonArray.put(jsonObject);
+				count++;
 			}
-			return jsonArray.toString();
+			LogUtil.d("未发送的消息:"+count+jsonArray.toString());
+			session.getBasicRemote().sendBinary(JOToByteBuffer(jsonArray));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return null;
 	}
 	
-	
+	/**
+	 * 转bytebuffer发送
+	 * @param ob
+	 * @return
+	 */
+	public static ByteBuffer JOToByteBuffer(Object ob){
+		ByteBuffer bb=ByteBuffer.wrap(ob.toString().getBytes());
+		return bb;
+		
+	}
 	/**
 	 * 登录成功后发送
 	 * @param receiverId

@@ -78,7 +78,7 @@ public class ReceiveMessageHandler extends BaseChat{
 	    	switch (type) {
 			case TextMessage:
 				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
-				new SendMessageHandler().sendMessage(jsonObject,message);
+				new SendMessageHandler().sendMessage(jsonObject);
 				break;
 			case ImageMessage:
 				String imgString=jsonObject.getString(ConstantUtil.CONTENT);

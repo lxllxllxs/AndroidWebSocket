@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;  
 import java.util.List;  
 import java.util.Map;  
+
+import com.mysql.jdbc.log.Log;
   
   
   
@@ -80,7 +82,7 @@ public class JdbcUtils {
     public static ResultSet queryUnSendMessage(String receiverId){
     	String s="select * from im_unsend where receiverId=%s";
     	String sql=String.format(s, "'"+receiverId+"'");
-    	
+    	LogUtil.d("查找未发送消息："+sql);
     	return executeQueryRS(sql);
     	
     }
