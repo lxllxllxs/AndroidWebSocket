@@ -35,7 +35,7 @@ import handler.LoginHandler;
 import handler.SendMessageHandler;
 
 @ServerEndpoint(value = "/Chat")
-public class Chat extends BaseChat{
+public class ReceiveMessageHandler extends BaseChat{
     /**
      * 连接对象集合
      */
@@ -45,7 +45,7 @@ public class Chat extends BaseChat{
      * WebSocket Session
      */
 
-    public Chat() {
+    public ReceiveMessageHandler() {
     }
     /**
      * 打开连接
@@ -57,7 +57,7 @@ public class Chat extends BaseChat{
     	String message = String.format("System %s %s", session.getId(),
                 " has joined.");
         System.out.println(message);
-        Chat.broadCast(message);
+        ReceiveMessageHandler.broadCast(message);
     }
     
   
@@ -78,7 +78,7 @@ public class Chat extends BaseChat{
 	    	switch (type) {
 			case TextMessage:
 				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
-				new SendMessageHandler().sendMessage(session, jsonObject.getString(ConstantUtil.CONTENT).getBytes());
+				new SendMessageHandler().sendMessage(jsonObject,message);
 				break;
 			case ImageMessage:
 				String imgString=jsonObject.getString(ConstantUtil.CONTENT);
@@ -87,11 +87,13 @@ public class Chat extends BaseChat{
 			case Login:
 				String username=jsonObject.getString(ConstantUtil.USER_NAME);
 				String password=jsonObject.getString(ConstantUtil.PASSWORD);
-				boolean isSuccuess=new LoginHandler().isSignIn(session,username, password);
-				if(isSuccuess){
+				String  receiverId=new LoginHandler().SignIn(session,username, password);
+				if(receiverId!=null){
 					jsonObject.put(ConstantUtil.RESULT,true);
-					//应该在这里推送好友列表
-					new SendMessageHandler().sendLinkMan(session);
+					//应该在这里推送好友列表 还有未接收消息
+					SendMessageHandler sh=new SendMessageHandler(session);
+					sh.sendLinkMan(receiverId);
+					sh.sendUnReceiverMessage(receiverId);
 				}
 				break;
 			default:

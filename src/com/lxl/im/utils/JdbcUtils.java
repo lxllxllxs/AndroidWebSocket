@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;  
 import java.sql.ResultSetMetaData;  
 import java.sql.SQLException;  
+import java.sql.Statement;
 import java.util.ArrayList;  
 import java.util.HashMap;  
 import java.util.List;  
@@ -16,15 +17,15 @@ import java.util.Map;
 public class JdbcUtils {  
     //数据库用户名  
     private static final String USERNAME = "root";  
-    //数据库密码  
-    private static final String PASSWORD = "123";  
+    //数据库密码  台式为空
+    private static final String PASSWORD = "";  
+  //数据库密码  
+//    private static final String PASSWORD = "123";  
     //驱动信息   
     private static final String DRIVER = "com.mysql.jdbc.Driver";  
     //数据库地址  
     private static final String URL = "jdbc:mysql://localhost:3306/im";  
-    private Connection connection;  
-    private ResultSet resultSet;
-	private PreparedStatement preparedStatement;  
+    private static Connection connection;  
     static {  
         // TODO Auto-generated constructor stub  
         try{  
@@ -40,7 +41,7 @@ public class JdbcUtils {
      * 获得数据库的连接 
      * @return 
      */  
-    public Connection getConnection(){
+    public static Connection getConnection(){
     	if(connection==null){
 		    try {  
 		        connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);  
@@ -59,15 +60,60 @@ public class JdbcUtils {
      * @param params 参数数组，若没有参数则为null 
      * @return 结果集 
      */  
-    public ResultSet executeQueryRS(String sql) {  
-            try {
-				preparedStatement = getConnection().prepareStatement(sql);
-				 resultSet = preparedStatement.executeQuery();
+    public static ResultSet executeQueryRS(String sql) {  
+    	PreparedStatement ps;  
+    	ResultSet resultSet=null;
+    	try {
+    		ps = getConnection().prepareStatement(sql);
+				 resultSet = ps.executeQuery();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}  
         return resultSet;  
     }  
     
-  
+    /**
+     * 根据接送人id,查找，在该id登陆成功时推送
+     * @param receiverId
+     * @return
+     */
+    public static ResultSet queryUnSendMessage(String receiverId){
+    	String s="select * from im_unsend where receiverId=%s";
+    	String sql=String.format(s, "'"+receiverId+"'");
+    	
+    	return executeQueryRS(sql);
+    	
+    }
+    
+    
+    
+    /**
+     * 将未发送信息插入数据库
+     * @param receiverId
+     * @param jsonString
+     * @return
+     */
+    public static boolean insertIntoUnsend(String receiverId,String jsonString) { 
+    	 String s = "insert into im_unsend(receiverId,content) values(%s,%s)";
+    	 String sql=String.format(s,"'"+receiverId+"'","'"+jsonString+"'");
+		
+    	 Statement st;
+    	 System.out.println("insertIntoUnsend = "+sql);
+         int result=0;
+		try {
+			st= getConnection().createStatement();
+			result = st.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+         //处理结果
+         if(result>0){
+             System.out.println("操作成功");
+             return true;
+         }else{
+             System.out.println("操作失败");
+             return false;
+         }
+    }  
+    
 }  

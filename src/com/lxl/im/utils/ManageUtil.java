@@ -7,8 +7,8 @@ import java.util.List;
 import javax.websocket.Session;
 
 import com.yiyekeji.BaseChat;
-import com.yiyekeji.Chat;
+import com.yiyekeji.ReceiveMessageHandler;
 
 public class ManageUtil {
-	public static HashMap<Session,String> chatList=new HashMap<Session,String>();
+	public static HashMap<String,Session> chatList=new HashMap<String,Session>();
 }

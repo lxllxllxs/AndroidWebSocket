@@ -11,21 +11,21 @@ import com.lxl.im.utils.ManageUtil;
 
 public class LoginHandler {
 
-	public boolean isSignIn(Session session,String username,String pwd){
-		JdbcUtils ju=new JdbcUtils();
+	public String SignIn(Session session,String username,String pwd){
 		String sql="select userid from im_user where username="+"'"+username+"'"+" and pwd="+"'"+pwd+"'";
 		System.out.println(sql);
-		ResultSet rs=ju.executeQueryRS(sql);
+		ResultSet rs=JdbcUtils.executeQueryRS(sql);
 		try {
 			if(rs.next()){
-				ManageUtil.chatList.put(session,rs.getString("userid"));
+				String receiverid=rs.getString("userid");
+				ManageUtil.chatList.put(receiverid,session);
 				 LogUtil.d("登录用户数为"+ManageUtil.chatList.size());
-				return true;
+				return receiverid;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 	
 }

@@ -12,5 +12,9 @@ public class ConstantUtil {
     public final static String RESULT="result";
     public final static String LinkList="LinkList";
     
+    public final static String SENDER="sender";
+    public final static String RECEIVER="receiver";
+    public final static String SENDER_ID="senderId";
+    public final static String RECEIVER_ID="receiverID";
 }
 
