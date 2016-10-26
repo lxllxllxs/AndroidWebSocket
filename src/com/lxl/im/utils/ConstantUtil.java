@@ -2,7 +2,12 @@ package com.lxl.im.utils;
 
 public class ConstantUtil {
 
-	public final static String MESSAG_TYPE="messageType";
+    /*******发送的JSON固定头部*******/
+    public static final String TYPE="Type";
+    public static final String MESSAGE_TYPE="messageType";
+
+		
+	
 	public final static String CONTENT="content";
 	
 	

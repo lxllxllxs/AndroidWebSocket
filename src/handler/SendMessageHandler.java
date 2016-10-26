@@ -1,5 +1,8 @@
 package handler;
 
+import imenum.MainType;
+import imenum.SysMessType;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.sql.ResultSet;
@@ -99,14 +102,15 @@ public class SendMessageHandler {
 	 * 登录成功后发送
 	 * @param receiverId
 	 */
-	public void sendLinkMan(String receiverId){
+	public  void sendLinkMan(String receiverId){
 		try {
 			JdbcUtils ju=new JdbcUtils();
 			JSONObject jsonObject=new JSONObject();
 			String sql=String.format("select * from im_linkman where user1id=%s","'"+receiverId+"'");
 			ResultSet rs=ju.executeQueryRS(sql);
 			int count=0;
-			jsonObject.put(ConstantUtil.MESSAG_TYPE, MessageType.LinkMan);
+			jsonObject.put(MainType.getName(), MainType.SysMessType);
+			jsonObject.put(SysMessType.getName(),SysMessType.Login);
 			while(rs.next()){
 				String user2id=rs.getString("user2id");
 				String user2name=rs.getString("user2name");

@@ -74,7 +74,7 @@ public class ReceiveMessageHandler extends BaseChat{
 			jsonString = new String(message,"utf-8").trim();
 //			LogUtil.d(jsonString.length());
 			jsonObject= new JSONObject(jsonString);
-			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAG_TYPE));
+			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAGE_TYPE));
 	    	switch (type) {
 			case TextMessage:
 				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
@@ -93,7 +93,7 @@ public class ReceiveMessageHandler extends BaseChat{
 					//应该在这里推送好友列表 还有未接收消息
 					SendMessageHandler sh=new SendMessageHandler(session);
 					sh.sendLinkMan(receiverId);
-					sh.sendUnReceiverMessage(receiverId);
+//					sh.sendUnReceiverMessage(receiverId);//暂时未处理 未处理好JSonArray
 				}
 				break;
 			default:
