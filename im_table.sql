@@ -12,7 +12,7 @@ MySQL - 5.7.16 : Database - im
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`im` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`im` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
 USE `im`;
 
@@ -39,14 +39,14 @@ DROP TABLE IF EXISTS `im_unsend`;
 
 CREATE TABLE `im_unsend` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `receiverId` varchar(100) NOT NULL,
+  `receiverId` varchar(100) CHARACTER SET latin1 NOT NULL,
   `content` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 /*Data for the table `im_unsend` */
 
-insert  into `im_unsend`(`id`,`receiverId`,`content`) values (1,'201911asdasd','{\"senderId\":\"123\",\"receiverID\":\"201911asdasd\",\"messageType\":\"TextMessage\",\"receiver\":\"lxl2\",\"sender\":\"lxl\",\"content\":\"???????????????\"}'),(2,'201911asdasd','{\"senderId\":\"123\",\"receiverID\":\"201911asdasd\",\"messageType\":\"TextMessage\",\"receiver\":\"lxl2\",\"sender\":\"lxl\",\"content\":\"???????????????\"}');
+insert  into `im_unsend`(`id`,`receiverId`,`content`) values (16,'201sww22123sd','{\"senderId\":\"123\",\"ChatMessageType\":\"TextMessage\",\"receiverID\":\"201sww22123sd\",\"receiver\":\"lxl3\",\"sender\":\"lxl\",\"MainType\":\"ChatMessageType\",\"content\":\"春江潮水连海平，海上明月共潮生\"}');
 
 /*Table structure for table `im_user` */
 

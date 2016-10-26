@@ -1,5 +1,6 @@
 package handler;
 
+import imenum.ChatMessageType;
 import imenum.MainType;
 import imenum.SysMessType;
 
@@ -64,21 +65,26 @@ public class SendMessageHandler {
 	}
 	
 	/**
-	 * 推送未接收信息
+	 * 发送离线信息
+	 * 主类型 聊天信息
+	 * 子类型 文本消息
+	 * 单条发送
 	 */
-	public void sendUnReceiverMessage(String receiverId){
-		ResultSet rs=JdbcUtils.queryUnSendMessage(receiverId);
-		JSONArray jsonArray=new JSONArray();
-		JSONObject jsonObject;
-		int count=0;
+	public void sendUnReceiverMessage(String userId){
+		ResultSet rs=JdbcUtils.queryUnSendMessage(userId);
+		JSONObject jsonObject=null;
+		ArrayList<JSONObject> list=new ArrayList<JSONObject>();
 		try {
 			while(rs.next()){
 				jsonObject=new JSONObject(rs.getString("content"));
-				jsonArray.put(jsonObject);
-				count++;
+				jsonObject.put(MainType.getName(), MainType.ChatMessageType);
+				jsonObject.put(ChatMessageType.getName(), ChatMessageType.TextMessage);
+//				jsonArray.put(jsonObject);
+				list.add(jsonObject);
+				LogUtil.d("未发送的消息:"+list.size()+jsonObject.toString());
+				session.getBasicRemote().sendBinary(JOToByteBuffer(jsonObject));
 			}
-			LogUtil.d("未发送的消息:"+count+jsonArray.toString());
-			session.getBasicRemote().sendBinary(JOToByteBuffer(jsonArray));
+//			jsonObject.put(ChatMessageType.TextMessage.toString(), jsonArray);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -102,11 +108,11 @@ public class SendMessageHandler {
 	 * 登录成功后发送
 	 * @param receiverId
 	 */
-	public  void sendLinkMan(String receiverId){
+	public  void sendLinkMan(String userId,String username){
 		try {
 			JdbcUtils ju=new JdbcUtils();
 			JSONObject jsonObject=new JSONObject();
-			String sql=String.format("select * from im_linkman where user1id=%s","'"+receiverId+"'");
+			String sql=String.format("select * from im_linkman where user1id=%s","'"+userId+"'");
 			ResultSet rs=ju.executeQueryRS(sql);
 			int count=0;
 			jsonObject.put(MainType.getName(), MainType.SysMessType);
@@ -117,6 +123,8 @@ public class SendMessageHandler {
 				jsonObject.put(user2id,user2name);
 				count++;
 			}
+			//用户信息
+			jsonObject.put(userId,username);
 			LogUtil.d(String.format("一共有%s条好友记录", count));
 			session.getBasicRemote().sendBinary(ByteBuffer.wrap(jsonObject.toString().getBytes()));
 		} catch (SQLException e) {

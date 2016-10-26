@@ -1,7 +1,7 @@
 package imenum;
 
  public enum ChatMessageType{
-        TextMessage,ImageMessage,RedPocketMessage;
+        TextMessage,ImageMessage,RedPocketMessage,UnReceiveMessage;
 
         public static  boolean contain(String tyep){
             for (ChatMessageType messageType:ChatMessageType.values()){

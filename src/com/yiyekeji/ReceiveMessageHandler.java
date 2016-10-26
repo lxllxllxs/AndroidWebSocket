@@ -1,4 +1,8 @@
 package com.yiyekeji;
+import imenum.ChatMessageType;
+import imenum.MainType;
+import imenum.SysMessType;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,7 +33,6 @@ import com.lxl.im.utils.ConstantUtil;
 import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
-import com.yiyekeji.bean.ChatMessage;
 
 import handler.LoginHandler;
 import handler.SendMessageHandler;
@@ -40,6 +43,7 @@ public class ReceiveMessageHandler extends BaseChat{
      * 连接对象集合
      */
     private String nickName;
+    private String  userId;
     Session session;
     /**
      * WebSocket Session
@@ -74,28 +78,41 @@ public class ReceiveMessageHandler extends BaseChat{
 			jsonString = new String(message,"utf-8").trim();
 //			LogUtil.d(jsonString.length());
 			jsonObject= new JSONObject(jsonString);
-			MessageType type=MessageType.valueOf(jsonObject.getString(ConstantUtil.MESSAGE_TYPE));
+			MainType type=MainType.valueOf(jsonObject.getString(MainType.getName()));
 	    	switch (type) {
-			case TextMessage:
-				LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
-				new SendMessageHandler().sendMessage(jsonObject);
+			case ChatMessageType:
+				ChatMessageType chatMessageType=ChatMessageType.valueOf(jsonObject.getString(ChatMessageType.getName()));
+				switch (chatMessageType) {
+					case TextMessage:
+						LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
+						SendMessageHandler sh=new SendMessageHandler();
+						sh.sendMessage(jsonObject);
+						break;
+					case UnReceiveMessage:
+						SendMessageHandler sh1=new SendMessageHandler(session);
+						sh1.sendUnReceiverMessage(userId);//
+						break;
+					default:
+						break;
+					}
 				break;
-			case ImageMessage:
-				String imgString=jsonObject.getString(ConstantUtil.CONTENT);
-				stringToImage(imgString.getBytes(),"C:/xx.jpg");
-				break;
-			case Login:
-				String username=jsonObject.getString(ConstantUtil.USER_NAME);
-				String password=jsonObject.getString(ConstantUtil.PASSWORD);
-				String  receiverId=new LoginHandler().SignIn(session,username, password);
-				if(receiverId!=null){
-					jsonObject.put(ConstantUtil.RESULT,true);
-					//应该在这里推送好友列表 还有未接收消息
-					SendMessageHandler sh=new SendMessageHandler(session);
-					sh.sendLinkMan(receiverId);
-//					sh.sendUnReceiverMessage(receiverId);//暂时未处理 未处理好JSonArray
-				}
-				break;
+			case SysMessType:
+				SysMessType Type=SysMessType.valueOf(jsonObject.getString(SysMessType.getName()));
+				switch (Type) {
+					case Login:
+						String username=jsonObject.getString(ConstantUtil.USER_NAME);
+						String password=jsonObject.getString(ConstantUtil.PASSWORD);
+						userId=new LoginHandler().SignIn(session,username, password);
+						if(userId!=null){
+							jsonObject.put(ConstantUtil.RESULT,true);
+							//应该在这里推送好友列表 还有未接收消息
+							SendMessageHandler sh1=new SendMessageHandler(session);
+							sh1.sendLinkMan(userId,username);
+						}
+						break;
+					default:
+						break;
+					}
 			default:
 				break;
 			}

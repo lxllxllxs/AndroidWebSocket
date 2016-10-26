@@ -25,8 +25,8 @@ public class JdbcUtils {
 //    private static final String PASSWORD = "123";  
     //驱动信息   
     private static final String DRIVER = "com.mysql.jdbc.Driver";  
-    //数据库地址  
-    private static final String URL = "jdbc:mysql://localhost:3306/im";  
+    //数据库地址   要设置为utf_8
+    private static final String URL = "jdbc:mysql://localhost:3306/im?useUnicode=true&characterEncoding=UTF-8";  
     private static Connection connection;  
     static {  
         // TODO Auto-generated constructor stub  
