@@ -24,6 +24,9 @@ import com.lxl.im.utils.JdbcUtils;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
 import com.mysql.jdbc.log.Log;
+import com.yiyekeji.bean.IMessageFactory.IMessage;
+import com.yiyekeji.bean.IMessageFactory.IMessage.User;
+import com.yiyekeji.bean.IMessageFactory.IMessage.User.Builder;
 
 import jdk.nashorn.internal.scripts.JS;
 
@@ -41,23 +44,17 @@ public class SendMessageHandler {
 	 * @param jsonObject
 	 * @param payload
 	 */
-	public void sendMessage(JSONObject jsonObject){
-		String receiverId="";
-		try {
-			receiverId = jsonObject.getString(ConstantUtil.RECEIVER_ID);
-		} catch (JSONException e1) {
-			e1.printStackTrace();
-		}
+	public void sendMessage(IMessage iMessage){
 		
 		for(Map.Entry<String,Session> item:ManageUtil.chatList.entrySet()){
 			try {
-				if(item.getKey().equals(receiverId)){
-					item.getValue().getBasicRemote().sendBinary(JOToByteBuffer(jsonObject));
+				if(item.getKey().equals(iMessage.getReceiverId())){
+					item.getValue().getBasicRemote().sendBinary(ToByteBuffer(iMessage));
 					return;
 				}
-				LogUtil.d("该用户未登录"+receiverId);
+				LogUtil.d("该用户未登录"+iMessage.getReceiverId());
 				//在这里把消息存进 数据库
-				JdbcUtils.insertIntoUnsend(receiverId,jsonObject.toString());
+				JdbcUtils.insertIntoUnsend(iMessage.getReceiverId(),iMessage.toString());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -82,7 +79,7 @@ public class SendMessageHandler {
 //				jsonArray.put(jsonObject);
 				list.add(jsonObject);
 				LogUtil.d("未发送的消息:"+list.size()+jsonObject.toString());
-				session.getBasicRemote().sendBinary(JOToByteBuffer(jsonObject));
+				session.getBasicRemote().sendBinary(ToByteBuffer(jsonObject));
 			}
 //			jsonObject.put(ChatMessageType.TextMessage.toString(), jsonArray);
 		} catch (SQLException e) {
@@ -99,7 +96,7 @@ public class SendMessageHandler {
 	 * @param ob
 	 * @return
 	 */
-	public static ByteBuffer JOToByteBuffer(Object ob){
+	public static ByteBuffer ToByteBuffer(Object ob){
 		ByteBuffer bb=ByteBuffer.wrap(ob.toString().getBytes());
 		return bb;
 		
@@ -108,7 +105,7 @@ public class SendMessageHandler {
 	 * 登录成功后发送
 	 * @param receiverId
 	 */
-	public  void sendLinkMan(String userId,String username,JSONObject jsonObject){
+	public  void sendLinkMan(String userId,IMessage imessage){
 		try {
 			JdbcUtils ju=new JdbcUtils();
 			String sql=String.format("select * from im_linkman where user1id=%s","'"+userId+"'");
@@ -117,16 +114,17 @@ public class SendMessageHandler {
 			while(rs.next()){
 				String user2id=rs.getString("user2id");
 				String user2name=rs.getString("user2name");
-				jsonObject.put(user2id,user2name);
+				Builder userBuidler=IMessage.User.newBuilder(); 
+				userBuidler.setUserId(user2id);
+				userBuidler.setUsername(user2name);
+				imessage=imessage.newBuilder().addUser(userBuidler.build()).mergeFrom(imessage).build();
 				count++;
 			}
-			//用户信息
-			jsonObject.put(userId,username);
 			LogUtil.d(String.format("一共有%s条好友记录", count));
-			session.getBasicRemote().sendBinary(ByteBuffer.wrap(jsonObject.toString().getBytes()));
+			LogUtil.d(imessage.toByteString());
+			session.getBasicRemote().sendBinary(ByteBuffer.wrap(imessage.toByteArray()));
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();

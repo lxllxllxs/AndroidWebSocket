@@ -35,6 +35,7 @@ import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
 import com.yiyekeji.bean.IMessageFactory;
+import com.yiyekeji.bean.IMessageFactory.IMessage.Builder;
 import com.yiyekeji.bean.IMessageFactory.IMessage.User;
 
 import handler.LoginHandler;
@@ -67,70 +68,12 @@ public class ReceiveMessageHandler extends BaseChat{
         ReceiveMessageHandler.broadCast(message);
     }
     
-  
-    
     /**
-     * 先解析JSON数据
-     * @param message
-     */
-    public void s(byte[] message){
-    	String jsonString;
-    	JSONObject jsonObject;
-		try {
-			jsonString = new String(message,"utf-8").trim();
-//			LogUtil.d(jsonString.length());
-			jsonObject= new JSONObject(jsonString);
-			MainType type=MainType.valueOf(jsonObject.getString(MainType.getName()));
-	    	switch (type) {
-			case ChatMessageType:
-				ChatMessageType chatMessageType=ChatMessageType.valueOf(jsonObject.getString(ChatMessageType.getName()));
-				switch (chatMessageType) {
-					case TextMessage:
-						LogUtil.d(jsonObject.getString(ConstantUtil.CONTENT));
-						SendMessageHandler sh=new SendMessageHandler();
-						sh.sendMessage(jsonObject);
-						break;
-					case UnReceiveMessage:
-						SendMessageHandler sh1=new SendMessageHandler(session);
-						sh1.sendUnReceiverMessage(userId);//
-						break;
-					default:
-						break;
-					}
-				break;
-			case SysMessType:
-				SysMessType Type=SysMessType.valueOf(jsonObject.getString(SysMessType.getName()));
-				switch (Type) {
-					case Login:
-						String username=jsonObject.getString(ConstantUtil.USER_NAME);
-						String password=jsonObject.getString(ConstantUtil.PASSWORD);
-						userId=new LoginHandler().SignIn(session,username, password);
-						SendMessageHandler sh1=new SendMessageHandler(session);
-						if(userId!=null){
-							jsonObject.put(ConstantUtil.RESULT,true);
-							//应该在这里推送好友列表 还有未接收消息
-							sh1.sendLinkMan(userId,username,jsonObject);
-						}else{
-							jsonObject.put(ConstantUtil.RESULT,false);
-						}
-						break;
-					default:
-						break;
-					}
-			default:
-				break;
-			}
-		} catch (UnsupportedEncodingException | JSONException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    /**
-     * 先解析JSON数据
      * @param message
      */
     @OnMessage
     public void receiveMessage(byte[] message){
+    	SendMessageHandler sh1=new SendMessageHandler(session);
     	IMessageFactory.IMessage iMessage=null;
 		try {
 			iMessage = IMessageFactory.IMessage.parseFrom(message);
@@ -140,22 +83,33 @@ public class ReceiveMessageHandler extends BaseChat{
     	if(iMessage.getMainType().equals("0")){
     		switch(iMessage.getSubType()){
     		case "0":
+    			Builder buidler=IMessageFactory.IMessage.newBuilder();
     			User user=iMessage.getUser(0);
     			userId=new LoginHandler().SignIn(session,user.getUsername(),user.getPassword());
-				SendMessageHandler sh1=new SendMessageHandler(session);
 				if(userId!=null){
-					iMessage.newBuilder().setResult("1");
-					ByteBuffer bb=ByteBuffer.wrap(iMessage.toByteArray());
-					try {
-						session.getBasicRemote().sendBinary(bb);
-						//应该在这里推送好友列表 还有未接收消息
-//						sh1.sendLinkMan(userId,username,jsonObject);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					//重构信息
+					iMessage=buidler.setResult("1").mergeFrom(iMessage).build();
 				}else{
+					iMessage=buidler.setResult("0").mergeFrom(iMessage).build();
 					iMessage.newBuilder().setResult("0");
 				}
+				ByteBuffer bb=ByteBuffer.wrap(iMessage.toByteArray());
+				
+				try {
+					session.getBasicRemote().sendBinary(bb);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    			break;
+    		case "1":
+    			//应该在这里推送好友列表 还有未接收消息
+    			sh1.sendLinkMan(userId,iMessage);
+    			break;
+    		}
+    	}else if(iMessage.getMainType().equals("1")){
+    		switch(iMessage.getSubType()){
+    		case "0":
+    			sh1.sendMessage(iMessage);
     			break;
     		}
     	}

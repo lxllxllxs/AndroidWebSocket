@@ -11,27 +11,31 @@ public final class IMessageFactory {
   public interface IMessageOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional string senderId = 1;
-    boolean hasSenderId();
-    String getSenderId();
-    
-    // optional string receiverId = 2;
-    boolean hasReceiverId();
-    String getReceiverId();
-    
-    // optional string content = 3;
-    boolean hasContent();
-    String getContent();
-    
-    // optional string mainType = 4;
+    // required string MainType = 1;
     boolean hasMainType();
     String getMainType();
     
-    // optional string subType = 5;
+    // required string subType = 2;
     boolean hasSubType();
     String getSubType();
     
-    // repeated .IMessage.User user = 6;
+    // optional string senderId = 3;
+    boolean hasSenderId();
+    String getSenderId();
+    
+    // optional string receiverId = 4;
+    boolean hasReceiverId();
+    String getReceiverId();
+    
+    // optional string content = 5;
+    boolean hasContent();
+    String getContent();
+    
+    // optional string result = 6;
+    boolean hasResult();
+    String getResult();
+    
+    // repeated .IMessage.User user = 7;
     java.util.List<com.yiyekeji.bean.IMessageFactory.IMessage.User> 
         getUserList();
     com.yiyekeji.bean.IMessageFactory.IMessage.User getUser(int index);
@@ -40,10 +44,6 @@ public final class IMessageFactory {
         getUserOrBuilderList();
     com.yiyekeji.bean.IMessageFactory.IMessage.UserOrBuilder getUserOrBuilder(
         int index);
-    
-    // optional string result = 7;
-    boolean hasResult();
-    String getResult();
   }
   public static final class IMessage extends
       com.google.protobuf.GeneratedMessage
@@ -76,13 +76,17 @@ public final class IMessageFactory {
     public interface UserOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // required string username = 1;
+      // optional string username = 1;
       boolean hasUsername();
       String getUsername();
       
-      // required string password = 2;
+      // optional string password = 2;
       boolean hasPassword();
       String getPassword();
+      
+      // optional string userId = 3;
+      boolean hasUserId();
+      String getUserId();
     }
     public static final class User extends
         com.google.protobuf.GeneratedMessage
@@ -113,7 +117,7 @@ public final class IMessageFactory {
       }
       
       private int bitField0_;
-      // required string username = 1;
+      // optional string username = 1;
       public static final int USERNAME_FIELD_NUMBER = 1;
       private java.lang.Object username_;
       public boolean hasUsername() {
@@ -145,7 +149,7 @@ public final class IMessageFactory {
         }
       }
       
-      // required string password = 2;
+      // optional string password = 2;
       public static final int PASSWORD_FIELD_NUMBER = 2;
       private java.lang.Object password_;
       public boolean hasPassword() {
@@ -177,23 +181,48 @@ public final class IMessageFactory {
         }
       }
       
+      // optional string userId = 3;
+      public static final int USERID_FIELD_NUMBER = 3;
+      private java.lang.Object userId_;
+      public boolean hasUserId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getUserId() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            userId_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
       private void initFields() {
         username_ = "";
         password_ = "";
+        userId_ = "";
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
         
-        if (!hasUsername()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-        if (!hasPassword()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
         memoizedIsInitialized = 1;
         return true;
       }
@@ -206,6 +235,9 @@ public final class IMessageFactory {
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeBytes(2, getPasswordBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBytes(3, getUserIdBytes());
         }
         getUnknownFields().writeTo(output);
       }
@@ -223,6 +255,10 @@ public final class IMessageFactory {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBytesSize(2, getPasswordBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(3, getUserIdBytes());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -352,6 +388,8 @@ public final class IMessageFactory {
           bitField0_ = (bitField0_ & ~0x00000001);
           password_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
+          userId_ = "";
+          bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
         
@@ -398,6 +436,10 @@ public final class IMessageFactory {
             to_bitField0_ |= 0x00000002;
           }
           result.password_ = password_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.userId_ = userId_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -420,19 +462,14 @@ public final class IMessageFactory {
           if (other.hasPassword()) {
             setPassword(other.getPassword());
           }
+          if (other.hasUserId()) {
+            setUserId(other.getUserId());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
         
         public final boolean isInitialized() {
-          if (!hasUsername()) {
-            
-            return false;
-          }
-          if (!hasPassword()) {
-            
-            return false;
-          }
           return true;
         }
         
@@ -469,13 +506,18 @@ public final class IMessageFactory {
                 password_ = input.readBytes();
                 break;
               }
+              case 26: {
+                bitField0_ |= 0x00000004;
+                userId_ = input.readBytes();
+                break;
+              }
             }
           }
         }
         
         private int bitField0_;
         
-        // required string username = 1;
+        // optional string username = 1;
         private java.lang.Object username_ = "";
         public boolean hasUsername() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
@@ -511,7 +553,7 @@ public final class IMessageFactory {
           onChanged();
         }
         
-        // required string password = 2;
+        // optional string password = 2;
         private java.lang.Object password_ = "";
         public boolean hasPassword() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -547,6 +589,42 @@ public final class IMessageFactory {
           onChanged();
         }
         
+        // optional string userId = 3;
+        private java.lang.Object userId_ = "";
+        public boolean hasUserId() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public String getUserId() {
+          java.lang.Object ref = userId_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            userId_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setUserId(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+          userId_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearUserId() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          userId_ = getDefaultInstance().getUserId();
+          onChanged();
+          return this;
+        }
+        void setUserId(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000004;
+          userId_ = value;
+          onChanged();
+        }
+        
         // @@protoc_insertion_point(builder_scope:IMessage.User)
       }
       
@@ -559,107 +637,11 @@ public final class IMessageFactory {
     }
     
     private int bitField0_;
-    // optional string senderId = 1;
-    public static final int SENDERID_FIELD_NUMBER = 1;
-    private java.lang.Object senderId_;
-    public boolean hasSenderId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public String getSenderId() {
-      java.lang.Object ref = senderId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          senderId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getSenderIdBytes() {
-      java.lang.Object ref = senderId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        senderId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // optional string receiverId = 2;
-    public static final int RECEIVERID_FIELD_NUMBER = 2;
-    private java.lang.Object receiverId_;
-    public boolean hasReceiverId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getReceiverId() {
-      java.lang.Object ref = receiverId_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          receiverId_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getReceiverIdBytes() {
-      java.lang.Object ref = receiverId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        receiverId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // optional string content = 3;
-    public static final int CONTENT_FIELD_NUMBER = 3;
-    private java.lang.Object content_;
-    public boolean hasContent() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    public String getContent() {
-      java.lang.Object ref = content_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          content_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getContentBytes() {
-      java.lang.Object ref = content_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        content_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // optional string mainType = 4;
-    public static final int MAINTYPE_FIELD_NUMBER = 4;
+    // required string MainType = 1;
+    public static final int MAINTYPE_FIELD_NUMBER = 1;
     private java.lang.Object mainType_;
     public boolean hasMainType() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     public String getMainType() {
       java.lang.Object ref = mainType_;
@@ -687,11 +669,11 @@ public final class IMessageFactory {
       }
     }
     
-    // optional string subType = 5;
-    public static final int SUBTYPE_FIELD_NUMBER = 5;
+    // required string subType = 2;
+    public static final int SUBTYPE_FIELD_NUMBER = 2;
     private java.lang.Object subType_;
     public boolean hasSubType() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     public String getSubType() {
       java.lang.Object ref = subType_;
@@ -719,29 +701,104 @@ public final class IMessageFactory {
       }
     }
     
-    // repeated .IMessage.User user = 6;
-    public static final int USER_FIELD_NUMBER = 6;
-    private java.util.List<com.yiyekeji.bean.IMessageFactory.IMessage.User> user_;
-    public java.util.List<com.yiyekeji.bean.IMessageFactory.IMessage.User> getUserList() {
-      return user_;
+    // optional string senderId = 3;
+    public static final int SENDERID_FIELD_NUMBER = 3;
+    private java.lang.Object senderId_;
+    public boolean hasSenderId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public java.util.List<? extends com.yiyekeji.bean.IMessageFactory.IMessage.UserOrBuilder> 
-        getUserOrBuilderList() {
-      return user_;
+    public String getSenderId() {
+      java.lang.Object ref = senderId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          senderId_ = s;
+        }
+        return s;
+      }
     }
-    public int getUserCount() {
-      return user_.size();
-    }
-    public com.yiyekeji.bean.IMessageFactory.IMessage.User getUser(int index) {
-      return user_.get(index);
-    }
-    public com.yiyekeji.bean.IMessageFactory.IMessage.UserOrBuilder getUserOrBuilder(
-        int index) {
-      return user_.get(index);
+    private com.google.protobuf.ByteString getSenderIdBytes() {
+      java.lang.Object ref = senderId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        senderId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
     
-    // optional string result = 7;
-    public static final int RESULT_FIELD_NUMBER = 7;
+    // optional string receiverId = 4;
+    public static final int RECEIVERID_FIELD_NUMBER = 4;
+    private java.lang.Object receiverId_;
+    public boolean hasReceiverId() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getReceiverId() {
+      java.lang.Object ref = receiverId_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          receiverId_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getReceiverIdBytes() {
+      java.lang.Object ref = receiverId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        receiverId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string content = 5;
+    public static final int CONTENT_FIELD_NUMBER = 5;
+    private java.lang.Object content_;
+    public boolean hasContent() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public String getContent() {
+      java.lang.Object ref = content_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          content_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getContentBytes() {
+      java.lang.Object ref = content_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        content_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
+    // optional string result = 6;
+    public static final int RESULT_FIELD_NUMBER = 6;
     private java.lang.Object result_;
     public boolean hasResult() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
@@ -772,25 +829,48 @@ public final class IMessageFactory {
       }
     }
     
+    // repeated .IMessage.User user = 7;
+    public static final int USER_FIELD_NUMBER = 7;
+    private java.util.List<com.yiyekeji.bean.IMessageFactory.IMessage.User> user_;
+    public java.util.List<com.yiyekeji.bean.IMessageFactory.IMessage.User> getUserList() {
+      return user_;
+    }
+    public java.util.List<? extends com.yiyekeji.bean.IMessageFactory.IMessage.UserOrBuilder> 
+        getUserOrBuilderList() {
+      return user_;
+    }
+    public int getUserCount() {
+      return user_.size();
+    }
+    public com.yiyekeji.bean.IMessageFactory.IMessage.User getUser(int index) {
+      return user_.get(index);
+    }
+    public com.yiyekeji.bean.IMessageFactory.IMessage.UserOrBuilder getUserOrBuilder(
+        int index) {
+      return user_.get(index);
+    }
+    
     private void initFields() {
+      mainType_ = "";
+      subType_ = "";
       senderId_ = "";
       receiverId_ = "";
       content_ = "";
-      mainType_ = "";
-      subType_ = "";
-      user_ = java.util.Collections.emptyList();
       result_ = "";
+      user_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      for (int i = 0; i < getUserCount(); i++) {
-        if (!getUser(i).isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
+      if (!hasMainType()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSubType()) {
+        memoizedIsInitialized = 0;
+        return false;
       }
       memoizedIsInitialized = 1;
       return true;
@@ -800,25 +880,25 @@ public final class IMessageFactory {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getSenderIdBytes());
+        output.writeBytes(1, getMainTypeBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getReceiverIdBytes());
+        output.writeBytes(2, getSubTypeBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getContentBytes());
+        output.writeBytes(3, getSenderIdBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getMainTypeBytes());
+        output.writeBytes(4, getReceiverIdBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getSubTypeBytes());
-      }
-      for (int i = 0; i < user_.size(); i++) {
-        output.writeMessage(6, user_.get(i));
+        output.writeBytes(5, getContentBytes());
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(7, getResultBytes());
+        output.writeBytes(6, getResultBytes());
+      }
+      for (int i = 0; i < user_.size(); i++) {
+        output.writeMessage(7, user_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -831,31 +911,31 @@ public final class IMessageFactory {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getSenderIdBytes());
+          .computeBytesSize(1, getMainTypeBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getReceiverIdBytes());
+          .computeBytesSize(2, getSubTypeBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getContentBytes());
+          .computeBytesSize(3, getSenderIdBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getMainTypeBytes());
+          .computeBytesSize(4, getReceiverIdBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getSubTypeBytes());
-      }
-      for (int i = 0; i < user_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, user_.get(i));
+          .computeBytesSize(5, getContentBytes());
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(7, getResultBytes());
+          .computeBytesSize(6, getResultBytes());
+      }
+      for (int i = 0; i < user_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, user_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -982,24 +1062,24 @@ public final class IMessageFactory {
       
       public Builder clear() {
         super.clear();
-        senderId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        receiverId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        content_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
         mainType_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000001);
         subType_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        senderId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        receiverId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        content_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
+        result_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         if (userBuilder_ == null) {
           user_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000040);
         } else {
           userBuilder_.clear();
         }
-        result_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
       
@@ -1041,36 +1121,36 @@ public final class IMessageFactory {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.senderId_ = senderId_;
+        result.mainType_ = mainType_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.receiverId_ = receiverId_;
+        result.subType_ = subType_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.content_ = content_;
+        result.senderId_ = senderId_;
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.mainType_ = mainType_;
+        result.receiverId_ = receiverId_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        result.subType_ = subType_;
+        result.content_ = content_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.result_ = result_;
         if (userBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          if (((bitField0_ & 0x00000040) == 0x00000040)) {
             user_ = java.util.Collections.unmodifiableList(user_);
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000040);
           }
           result.user_ = user_;
         } else {
           result.user_ = userBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.result_ = result_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1087,6 +1167,12 @@ public final class IMessageFactory {
       
       public Builder mergeFrom(com.yiyekeji.bean.IMessageFactory.IMessage other) {
         if (other == com.yiyekeji.bean.IMessageFactory.IMessage.getDefaultInstance()) return this;
+        if (other.hasMainType()) {
+          setMainType(other.getMainType());
+        }
+        if (other.hasSubType()) {
+          setSubType(other.getSubType());
+        }
         if (other.hasSenderId()) {
           setSenderId(other.getSenderId());
         }
@@ -1096,17 +1182,14 @@ public final class IMessageFactory {
         if (other.hasContent()) {
           setContent(other.getContent());
         }
-        if (other.hasMainType()) {
-          setMainType(other.getMainType());
-        }
-        if (other.hasSubType()) {
-          setSubType(other.getSubType());
+        if (other.hasResult()) {
+          setResult(other.getResult());
         }
         if (userBuilder_ == null) {
           if (!other.user_.isEmpty()) {
             if (user_.isEmpty()) {
               user_ = other.user_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000040);
             } else {
               ensureUserIsMutable();
               user_.addAll(other.user_);
@@ -1119,7 +1202,7 @@ public final class IMessageFactory {
               userBuilder_.dispose();
               userBuilder_ = null;
               user_ = other.user_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000040);
               userBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getUserFieldBuilder() : null;
@@ -1128,19 +1211,18 @@ public final class IMessageFactory {
             }
           }
         }
-        if (other.hasResult()) {
-          setResult(other.getResult());
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
-        for (int i = 0; i < getUserCount(); i++) {
-          if (!getUser(i).isInitialized()) {
-            
-            return false;
-          }
+        if (!hasMainType()) {
+          
+          return false;
+        }
+        if (!hasSubType()) {
+          
+          return false;
         }
         return true;
       }
@@ -1170,38 +1252,38 @@ public final class IMessageFactory {
             }
             case 10: {
               bitField0_ |= 0x00000001;
-              senderId_ = input.readBytes();
+              mainType_ = input.readBytes();
               break;
             }
             case 18: {
               bitField0_ |= 0x00000002;
-              receiverId_ = input.readBytes();
+              subType_ = input.readBytes();
               break;
             }
             case 26: {
               bitField0_ |= 0x00000004;
-              content_ = input.readBytes();
+              senderId_ = input.readBytes();
               break;
             }
             case 34: {
               bitField0_ |= 0x00000008;
-              mainType_ = input.readBytes();
+              receiverId_ = input.readBytes();
               break;
             }
             case 42: {
               bitField0_ |= 0x00000010;
-              subType_ = input.readBytes();
+              content_ = input.readBytes();
               break;
             }
             case 50: {
-              com.yiyekeji.bean.IMessageFactory.IMessage.User.Builder subBuilder = com.yiyekeji.bean.IMessageFactory.IMessage.User.newBuilder();
-              input.readMessage(subBuilder, extensionRegistry);
-              addUser(subBuilder.buildPartial());
+              bitField0_ |= 0x00000020;
+              result_ = input.readBytes();
               break;
             }
             case 58: {
-              bitField0_ |= 0x00000040;
-              result_ = input.readBytes();
+              com.yiyekeji.bean.IMessageFactory.IMessage.User.Builder subBuilder = com.yiyekeji.bean.IMessageFactory.IMessage.User.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addUser(subBuilder.buildPartial());
               break;
             }
           }
@@ -1210,118 +1292,10 @@ public final class IMessageFactory {
       
       private int bitField0_;
       
-      // optional string senderId = 1;
-      private java.lang.Object senderId_ = "";
-      public boolean hasSenderId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public String getSenderId() {
-        java.lang.Object ref = senderId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          senderId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setSenderId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        senderId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearSenderId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        senderId_ = getDefaultInstance().getSenderId();
-        onChanged();
-        return this;
-      }
-      void setSenderId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000001;
-        senderId_ = value;
-        onChanged();
-      }
-      
-      // optional string receiverId = 2;
-      private java.lang.Object receiverId_ = "";
-      public boolean hasReceiverId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getReceiverId() {
-        java.lang.Object ref = receiverId_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          receiverId_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setReceiverId(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        receiverId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearReceiverId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        receiverId_ = getDefaultInstance().getReceiverId();
-        onChanged();
-        return this;
-      }
-      void setReceiverId(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        receiverId_ = value;
-        onChanged();
-      }
-      
-      // optional string content = 3;
-      private java.lang.Object content_ = "";
-      public boolean hasContent() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      public String getContent() {
-        java.lang.Object ref = content_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          content_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setContent(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        content_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearContent() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        content_ = getDefaultInstance().getContent();
-        onChanged();
-        return this;
-      }
-      void setContent(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000004;
-        content_ = value;
-        onChanged();
-      }
-      
-      // optional string mainType = 4;
+      // required string MainType = 1;
       private java.lang.Object mainType_ = "";
       public boolean hasMainType() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public String getMainType() {
         java.lang.Object ref = mainType_;
@@ -1337,27 +1311,27 @@ public final class IMessageFactory {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000001;
         mainType_ = value;
         onChanged();
         return this;
       }
       public Builder clearMainType() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000001);
         mainType_ = getDefaultInstance().getMainType();
         onChanged();
         return this;
       }
       void setMainType(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000001;
         mainType_ = value;
         onChanged();
       }
       
-      // optional string subType = 5;
+      // required string subType = 2;
       private java.lang.Object subType_ = "";
       public boolean hasSubType() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public String getSubType() {
         java.lang.Object ref = subType_;
@@ -1373,30 +1347,174 @@ public final class IMessageFactory {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000002;
         subType_ = value;
         onChanged();
         return this;
       }
       public Builder clearSubType() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000002);
         subType_ = getDefaultInstance().getSubType();
         onChanged();
         return this;
       }
       void setSubType(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000002;
         subType_ = value;
         onChanged();
       }
       
-      // repeated .IMessage.User user = 6;
+      // optional string senderId = 3;
+      private java.lang.Object senderId_ = "";
+      public boolean hasSenderId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public String getSenderId() {
+        java.lang.Object ref = senderId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          senderId_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setSenderId(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        senderId_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearSenderId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        senderId_ = getDefaultInstance().getSenderId();
+        onChanged();
+        return this;
+      }
+      void setSenderId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        senderId_ = value;
+        onChanged();
+      }
+      
+      // optional string receiverId = 4;
+      private java.lang.Object receiverId_ = "";
+      public boolean hasReceiverId() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getReceiverId() {
+        java.lang.Object ref = receiverId_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          receiverId_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setReceiverId(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        receiverId_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearReceiverId() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        receiverId_ = getDefaultInstance().getReceiverId();
+        onChanged();
+        return this;
+      }
+      void setReceiverId(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        receiverId_ = value;
+        onChanged();
+      }
+      
+      // optional string content = 5;
+      private java.lang.Object content_ = "";
+      public boolean hasContent() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public String getContent() {
+        java.lang.Object ref = content_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          content_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setContent(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        content_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearContent() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        content_ = getDefaultInstance().getContent();
+        onChanged();
+        return this;
+      }
+      void setContent(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000010;
+        content_ = value;
+        onChanged();
+      }
+      
+      // optional string result = 6;
+      private java.lang.Object result_ = "";
+      public boolean hasResult() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public String getResult() {
+        java.lang.Object ref = result_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          result_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setResult(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearResult() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        result_ = getDefaultInstance().getResult();
+        onChanged();
+        return this;
+      }
+      void setResult(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000020;
+        result_ = value;
+        onChanged();
+      }
+      
+      // repeated .IMessage.User user = 7;
       private java.util.List<com.yiyekeji.bean.IMessageFactory.IMessage.User> user_ =
         java.util.Collections.emptyList();
       private void ensureUserIsMutable() {
-        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
           user_ = new java.util.ArrayList<com.yiyekeji.bean.IMessageFactory.IMessage.User>(user_);
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000040;
          }
       }
       
@@ -1512,7 +1630,7 @@ public final class IMessageFactory {
       public Builder clearUser() {
         if (userBuilder_ == null) {
           user_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000040);
           onChanged();
         } else {
           userBuilder_.clear();
@@ -1568,48 +1686,12 @@ public final class IMessageFactory {
           userBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.yiyekeji.bean.IMessageFactory.IMessage.User, com.yiyekeji.bean.IMessageFactory.IMessage.User.Builder, com.yiyekeji.bean.IMessageFactory.IMessage.UserOrBuilder>(
                   user_,
-                  ((bitField0_ & 0x00000020) == 0x00000020),
+                  ((bitField0_ & 0x00000040) == 0x00000040),
                   getParentForChildren(),
                   isClean());
           user_ = null;
         }
         return userBuilder_;
-      }
-      
-      // optional string result = 7;
-      private java.lang.Object result_ = "";
-      public boolean hasResult() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      public String getResult() {
-        java.lang.Object ref = result_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          result_ = s;
-          return s;
-        } else {
-          return (String) ref;
-        }
-      }
-      public Builder setResult(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        result_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearResult() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        result_ = getDefaultInstance().getResult();
-        onChanged();
-        return this;
-      }
-      void setResult(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000040;
-        result_ = value;
-        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:IMessage)
@@ -1642,13 +1724,13 @@ public final class IMessageFactory {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\025IMessageFactory.proto\"\276\001\n\010IMessage\022\020\n\010" +
-      "senderId\030\001 \001(\t\022\022\n\nreceiverId\030\002 \001(\t\022\017\n\007co" +
-      "ntent\030\003 \001(\t\022\020\n\010mainType\030\004 \001(\t\022\017\n\007subType" +
-      "\030\005 \001(\t\022\034\n\004user\030\006 \003(\0132\016.IMessage.User\022\016\n\006" +
-      "result\030\007 \001(\t\032*\n\004User\022\020\n\010username\030\001 \002(\t\022\020" +
-      "\n\010password\030\002 \002(\tB$\n\021com.yiyekeji.beanB\017I" +
-      "MessageFactory"
+      "\n\025IMessageFactory.proto\"\316\001\n\010IMessage\022\020\n\010" +
+      "MainType\030\001 \002(\t\022\017\n\007subType\030\002 \002(\t\022\020\n\010sende" +
+      "rId\030\003 \001(\t\022\022\n\nreceiverId\030\004 \001(\t\022\017\n\007content" +
+      "\030\005 \001(\t\022\016\n\006result\030\006 \001(\t\022\034\n\004user\030\007 \003(\0132\016.I" +
+      "Message.User\032:\n\004User\022\020\n\010username\030\001 \001(\t\022\020" +
+      "\n\010password\030\002 \001(\t\022\016\n\006userId\030\003 \001(\tB$\n\021com." +
+      "yiyekeji.beanB\017IMessageFactory"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1660,7 +1742,7 @@ public final class IMessageFactory {
           internal_static_IMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_IMessage_descriptor,
-              new java.lang.String[] { "SenderId", "ReceiverId", "Content", "MainType", "SubType", "User", "Result", },
+              new java.lang.String[] { "MainType", "SubType", "SenderId", "ReceiverId", "Content", "Result", "User", },
               com.yiyekeji.bean.IMessageFactory.IMessage.class,
               com.yiyekeji.bean.IMessageFactory.IMessage.Builder.class);
           internal_static_IMessage_User_descriptor =
@@ -1668,7 +1750,7 @@ public final class IMessageFactory {
           internal_static_IMessage_User_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_IMessage_User_descriptor,
-              new java.lang.String[] { "Username", "Password", },
+              new java.lang.String[] { "Username", "Password", "UserId", },
               com.yiyekeji.bean.IMessageFactory.IMessage.User.class,
               com.yiyekeji.bean.IMessageFactory.IMessage.User.Builder.class);
           return null;
