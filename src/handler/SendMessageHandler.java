@@ -108,15 +108,12 @@ public class SendMessageHandler {
 	 * 登录成功后发送
 	 * @param receiverId
 	 */
-	public  void sendLinkMan(String userId,String username){
+	public  void sendLinkMan(String userId,String username,JSONObject jsonObject){
 		try {
 			JdbcUtils ju=new JdbcUtils();
-			JSONObject jsonObject=new JSONObject();
 			String sql=String.format("select * from im_linkman where user1id=%s","'"+userId+"'");
 			ResultSet rs=ju.executeQueryRS(sql);
 			int count=0;
-			jsonObject.put(MainType.getName(), MainType.SysMessType);
-			jsonObject.put(SysMessType.getName(),SysMessType.Login);
 			while(rs.next()){
 				String user2id=rs.getString("user2id");
 				String user2name=rs.getString("user2name");

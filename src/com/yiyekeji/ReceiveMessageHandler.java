@@ -29,10 +29,13 @@ import org.json.JSONObject;
 import sun.misc.BASE64Decoder;
 
 import com.google.gson.Gson;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.lxl.im.utils.ConstantUtil;
 import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
+import com.yiyekeji.bean.IMessageFactory;
+import com.yiyekeji.bean.IMessageFactory.IMessage.User;
 
 import handler.LoginHandler;
 import handler.SendMessageHandler;
@@ -70,8 +73,7 @@ public class ReceiveMessageHandler extends BaseChat{
      * 先解析JSON数据
      * @param message
      */
-    @OnMessage
-    public void receiveMessage(byte[] message){
+    public void s(byte[] message){
     	String jsonString;
     	JSONObject jsonObject;
 		try {
@@ -103,11 +105,13 @@ public class ReceiveMessageHandler extends BaseChat{
 						String username=jsonObject.getString(ConstantUtil.USER_NAME);
 						String password=jsonObject.getString(ConstantUtil.PASSWORD);
 						userId=new LoginHandler().SignIn(session,username, password);
+						SendMessageHandler sh1=new SendMessageHandler(session);
 						if(userId!=null){
 							jsonObject.put(ConstantUtil.RESULT,true);
 							//应该在这里推送好友列表 还有未接收消息
-							SendMessageHandler sh1=new SendMessageHandler(session);
-							sh1.sendLinkMan(userId,username);
+							sh1.sendLinkMan(userId,username,jsonObject);
+						}else{
+							jsonObject.put(ConstantUtil.RESULT,false);
 						}
 						break;
 					default:
@@ -120,6 +124,45 @@ public class ReceiveMessageHandler extends BaseChat{
 			e.printStackTrace();
 		}
     }
+    
+    /**
+     * 先解析JSON数据
+     * @param message
+     */
+    @OnMessage
+    public void receiveMessage(byte[] message){
+    	IMessageFactory.IMessage iMessage=null;
+		try {
+			iMessage = IMessageFactory.IMessage.parseFrom(message);
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+		}
+    	if(iMessage.getMainType().equals("0")){
+    		switch(iMessage.getSubType()){
+    		case "0":
+    			User user=iMessage.getUser(0);
+    			userId=new LoginHandler().SignIn(session,user.getUsername(),user.getPassword());
+				SendMessageHandler sh1=new SendMessageHandler(session);
+				if(userId!=null){
+					iMessage.newBuilder().setResult("1");
+					ByteBuffer bb=ByteBuffer.wrap(iMessage.toByteArray());
+					try {
+						session.getBasicRemote().sendBinary(bb);
+						//应该在这里推送好友列表 还有未接收消息
+//						sh1.sendLinkMan(userId,username,jsonObject);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}else{
+					iMessage.newBuilder().setResult("0");
+				}
+    			break;
+    		}
+    	}
+    	
+	
+    }
+    
     
     /**
      * 发送到指定session
