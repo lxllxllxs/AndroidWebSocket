@@ -1,4 +1,5 @@
 package com.lxl.im.utils;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;  
 import java.sql.Connection;  
 import java.sql.DriverManager;  
@@ -95,9 +96,9 @@ public class JdbcUtils {
      * @param jsonString
      * @return
      */
-    public static boolean insertIntoUnsend(String receiverId,String jsonString) { 
+    public static boolean insertIntoUnsend(String receiverId,String content) { 
     	 String s = "insert into im_unsend(receiverId,content) values(%s,%s)";
-    	 String sql=String.format(s,"'"+receiverId+"'","'"+jsonString+"'");
+    	 String sql=String.format(s,"'"+receiverId+"'","'"+content+"'");
 		
     	 Statement st;
     	 System.out.println("insertIntoUnsend = "+sql);

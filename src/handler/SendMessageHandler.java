@@ -54,40 +54,10 @@ public class SendMessageHandler {
 				}
 				LogUtil.d("该用户未登录"+iMessage.getReceiverId());
 				//在这里把消息存进 数据库
-				JdbcUtils.insertIntoUnsend(iMessage.getReceiverId(),iMessage.toString());
+				JdbcUtils.insertIntoUnsend(iMessage.getReceiverId(),iMessage.getContent());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-	}
-	
-	/**
-	 * 发送离线信息
-	 * 主类型 聊天信息
-	 * 子类型 文本消息
-	 * 单条发送
-	 */
-	public void sendUnReceiverMessage(String userId){
-		ResultSet rs=JdbcUtils.queryUnSendMessage(userId);
-		JSONObject jsonObject=null;
-		ArrayList<JSONObject> list=new ArrayList<JSONObject>();
-		try {
-			while(rs.next()){
-				jsonObject=new JSONObject(rs.getString("content"));
-				jsonObject.put(MainType.getName(), MainType.ChatMessageType);
-				jsonObject.put(ChatMessageType.getName(), ChatMessageType.TextMessage);
-//				jsonArray.put(jsonObject);
-				list.add(jsonObject);
-				LogUtil.d("未发送的消息:"+list.size()+jsonObject.toString());
-				session.getBasicRemote().sendBinary(ToByteBuffer(jsonObject));
-			}
-//			jsonObject.put(ChatMessageType.TextMessage.toString(), jsonArray);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -96,8 +66,8 @@ public class SendMessageHandler {
 	 * @param ob
 	 * @return
 	 */
-	public static ByteBuffer ToByteBuffer(Object ob){
-		ByteBuffer bb=ByteBuffer.wrap(ob.toString().getBytes());
+	public static ByteBuffer ToByteBuffer(IMessage ob){
+		ByteBuffer bb=ByteBuffer.wrap(ob.toByteArray());
 		return bb;
 		
 	}
@@ -130,6 +100,27 @@ public class SendMessageHandler {
 			e.printStackTrace();
 		}
 		
+	}
+
+	/**
+	 * 根据id查找改用户下未接收信息
+	 * @param userId
+	 * @param iMessage
+	 */
+	public void sendUnReceiMessage(String userId, IMessage iMessage) {
+		ResultSet rs=JdbcUtils.queryUnSendMessage(userId);
+		ArrayList<IMessage> list=new ArrayList<>();
+		try {
+			while(rs.next()){
+				iMessage=iMessage.newBuilder().setContent(rs.getString("content")).mergeFrom(iMessage).build();
+				list.add(iMessage);
+				LogUtil.d(iMessage.toString());
+			}
+			LogUtil.d("未发送的消息共有:"+list.size());
+			session.getBasicRemote().sendBinary(ToByteBuffer(list.get(0)));
+		} catch (IOException | SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
