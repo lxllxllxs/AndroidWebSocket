@@ -24,6 +24,7 @@ import com.lxl.im.utils.JdbcUtils;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
 import com.mysql.jdbc.log.Log;
+import com.sun.istack.internal.NotNull;
 import com.yiyekeji.bean.IMessageFactory.IMessage;
 import com.yiyekeji.bean.IMessageFactory.IMessage.User;
 import com.yiyekeji.bean.IMessageFactory.IMessage.User.Builder;
@@ -39,13 +40,28 @@ public class SendMessageHandler {
 	}
 	
 	/**
+	 * 接收反馈成功
+	 * 接收端检查id 如果id一致则为客户端发送成功
+	 */
+	public void sendReceiSuccess(@NotNull IMessage iMessage){
+		LogUtil.d("准备推送反馈信息：接收者"+iMessage.getSenderId());
+		try {
+			session.getBasicRemote().sendText(iMessage.getId());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	/**
 	 * 发送单人聊天信息
 	 * 若离线则保存到数据的未发送消息表
 	 * @param jsonObject
 	 * @param payload
 	 */
 	public void sendMessage(IMessage iMessage){
-		
+		LogUtil.d("准备推送信息：接收者"+iMessage.getReceiverId());
 		for(Map.Entry<String,Session> item:ManageUtil.chatList.entrySet()){
 			try {
 				if(item.getKey().equals(iMessage.getReceiverId())){
@@ -57,6 +73,7 @@ public class SendMessageHandler {
 				JdbcUtils.insertIntoUnsend(iMessage.getReceiverId(),iMessage.getContent());
 			} catch (IOException e) {
 				e.printStackTrace();
+				LogUtil.d(e.getMessage()+e.toString());
 			}
 		}
 	}
@@ -89,10 +106,10 @@ public class SendMessageHandler {
 				userBuidler.setUsername(user2name);
 				imessage=imessage.newBuilder().addUser(userBuidler.build()).mergeFrom(imessage).build();
 				count++;
+				session.getBasicRemote().sendBinary(ByteBuffer.wrap(imessage.toByteArray()));
 			}
 			LogUtil.d(String.format("一共有%s条好友记录", count));
-			LogUtil.d(imessage.toByteString());
-			session.getBasicRemote().sendBinary(ByteBuffer.wrap(imessage.toByteArray()));
+		
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.printStackTrace();
@@ -117,7 +134,9 @@ public class SendMessageHandler {
 				LogUtil.d(iMessage.toString());
 			}
 			LogUtil.d("未发送的消息共有:"+list.size());
-			session.getBasicRemote().sendBinary(ToByteBuffer(list.get(0)));
+			for(IMessage im:list){
+				session.getBasicRemote().sendBinary(ToByteBuffer(im));
+			}
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
