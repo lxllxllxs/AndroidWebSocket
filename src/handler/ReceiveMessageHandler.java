@@ -1,4 +1,4 @@
-package com.yiyekeji;
+package handler;
 import imenum.ChatMessageType;
 import imenum.MainType;
 import imenum.SysMessType;
@@ -34,12 +34,10 @@ import com.lxl.im.utils.ConstantUtil;
 import com.lxl.im.utils.EnumUtil.MessageType;
 import com.lxl.im.utils.LogUtil;
 import com.lxl.im.utils.ManageUtil;
+import com.yiyekeji.BaseChat;
 import com.yiyekeji.bean.IMessageFactory;
 import com.yiyekeji.bean.IMessageFactory.IMessage.Builder;
 import com.yiyekeji.bean.IMessageFactory.IMessage.User;
-
-import handler.LoginHandler;
-import handler.SendMessageHandler;
 
 @ServerEndpoint(value = "/Chat")
 public class ReceiveMessageHandler extends BaseChat{
