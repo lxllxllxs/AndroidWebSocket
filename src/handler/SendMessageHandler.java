@@ -70,7 +70,13 @@ public class SendMessageHandler {
 				}
 				LogUtil.d("该用户未登录"+iMessage.getReceiverId());
 				//在这里把消息存进 数据库
-				JdbcUtils.insertIntoUnsend(iMessage.getReceiverId(),iMessage.getContent());
+				JdbcUtils.insertIntoUnsend(
+						iMessage.getReceiverId(),
+						iMessage.getContent(),
+						iMessage.getDate(),
+						iMessage.getId(),
+						iMessage.getSenderId()
+				);
 			} catch (IOException e) {
 				e.printStackTrace();
 				LogUtil.d(e.getMessage()+e.toString());
@@ -130,6 +136,10 @@ public class SendMessageHandler {
 		try {
 			while(rs.next()){
 				iMessage=iMessage.newBuilder().setContent(rs.getString("content")).mergeFrom(iMessage).build();
+				iMessage=iMessage.newBuilder().setDate(rs.getString("sendDate")).mergeFrom(iMessage).build();
+				iMessage=iMessage.newBuilder().setId(rs.getString("msgId")).mergeFrom(iMessage).build();
+				iMessage=iMessage.newBuilder().setReceiverId(rs.getString("receiverId")).mergeFrom(iMessage).build();
+				iMessage=iMessage.newBuilder().setSenderId(rs.getString("senderId")).mergeFrom(iMessage).build();
 				list.add(iMessage);
 				LogUtil.d(iMessage.toString());
 			}

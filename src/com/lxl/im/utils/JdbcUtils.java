@@ -21,9 +21,9 @@ public class JdbcUtils {
     //数据库用户名  
     private static final String USERNAME = "root";  
     //数据库密码  台式为空
-    private static final String PASSWORD = "";  
+//    private static final String PASSWORD = "";  
   //数据库密码  
-//    private static final String PASSWORD = "123";  
+    private static final String PASSWORD = "123";  
     //驱动信息   
     private static final String DRIVER = "com.mysql.jdbc.Driver";  
     //数据库地址   要设置为utf_8
@@ -96,10 +96,16 @@ public class JdbcUtils {
      * @param jsonString
      * @return
      */
-    public static boolean insertIntoUnsend(String receiverId,String content) { 
-    	 String s = "insert into im_unsend(receiverId,content) values(%s,%s)";
-    	 String sql=String.format(s,"'"+receiverId+"'","'"+content+"'");
-		
+    public static boolean insertIntoUnsend(String receiverId,String content,
+    		String sendDate,String msgId,String senderId) { 
+    	 String s = "insert into im_unsend(receiverId,content,sendDate,msgId,senderId) values(%s,%s,%s,%s,%s)";
+    	 String sql=String.format(s,
+    			 format(receiverId),
+    			 format(content),
+    			 format(sendDate),
+    			 format(msgId),
+    			 format(senderId)
+    			 );
     	 Statement st;
     	 System.out.println("insertIntoUnsend = "+sql);
          int result=0;
@@ -118,5 +124,10 @@ public class JdbcUtils {
              return false;
          }
     }  
+    
+    private static String  format(String s){
+    	return "'"+s+"'";
+    }
+    
     
 }  

@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v12.09 (64 bit)
-MySQL - 5.7.16 : Database - im
+SQLyog v10.2 
+MySQL - 5.5.28 : Database - im
 *********************************************************************
 */
 
@@ -12,7 +12,7 @@ MySQL - 5.7.16 : Database - im
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`im` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`im` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `im`;
 
@@ -41,12 +41,15 @@ CREATE TABLE `im_unsend` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `receiverId` varchar(100) CHARACTER SET latin1 NOT NULL,
   `content` text,
+  `senderId` varchar(100) DEFAULT NULL,
+  `sendDate` varchar(25) DEFAULT NULL,
+  `msgId` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 /*Data for the table `im_unsend` */
 
-insert  into `im_unsend`(`id`,`receiverId`,`content`) values (16,'201sww22123sd','{\"senderId\":\"123\",\"ChatMessageType\":\"TextMessage\",\"receiverID\":\"201sww22123sd\",\"receiver\":\"lxl3\",\"sender\":\"lxl\",\"MainType\":\"ChatMessageType\",\"content\":\"春江潮水连海平，海上明月共潮生\"}');
+insert  into `im_unsend`(`id`,`receiverId`,`content`,`senderId`,`sendDate`,`msgId`) values (11,'20125588885556','to lxl1','20191112lxl123','2016-11-04 10:41:07','8e8e25bd-97ca-4fab-bd1d-877aebc2a436'),(12,'20125588885556','to lxl1 from lxl 23.01','20191112lxl123','2016-11-04 11:02:15','4591012e-580e-4fe9-b4cb-0780215ef011');
 
 /*Table structure for table `im_user` */
 
