@@ -92,7 +92,7 @@ public class ReceiveMessageHandler extends BaseChat{
     			break;
     		case "2":
     			//应该在这里推送未接收消息
-    			sh1.sendUnReceiMessage(userId,iMessage);
+//    			sh1.sendUnReceiMessage(userId,iMessage);
     			break;
     		}
     	}else if(iMessage.getMainType().equals("1")){

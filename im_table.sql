@@ -45,11 +45,11 @@ CREATE TABLE `im_unsend` (
   `sendDate` varchar(25) DEFAULT NULL,
   `msgId` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 /*Data for the table `im_unsend` */
 
-insert  into `im_unsend`(`id`,`receiverId`,`content`,`senderId`,`sendDate`,`msgId`) values (11,'20125588885556','to lxl1','20191112lxl123','2016-11-04 10:41:07','8e8e25bd-97ca-4fab-bd1d-877aebc2a436'),(12,'20125588885556','to lxl1 from lxl 23.01','20191112lxl123','2016-11-04 11:02:15','4591012e-580e-4fe9-b4cb-0780215ef011');
+insert  into `im_unsend`(`id`,`receiverId`,`content`,`senderId`,`sendDate`,`msgId`) values (11,'20125588885556','to lxl1','20191112lxl123','2016-11-04 10:41:07','8e8e25bd-97ca-4fab-bd1d-877aebc2a436'),(12,'20125588885556','to lxl1 from lxl 23.01','20191112lxl123','2016-11-04 11:02:15','4591012e-580e-4fe9-b4cb-0780215ef011'),(13,'20125588885556','from lxl to lxl1','20191112lxl123','2016-11-08 09:13:26','bae2537d-f92d-47d8-8103-2be36680f956');
 
 /*Table structure for table `im_user` */
 
